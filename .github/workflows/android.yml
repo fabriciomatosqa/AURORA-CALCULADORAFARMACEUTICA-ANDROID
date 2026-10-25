@@ -1,0 +1,139 @@
+name: Android - testes, APK e Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Flutter 3.47.8 (versão validada pela CI)
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.8'
+          channel: stable
+          cache: true
+      - name: Criar projeto Android sem sobrescrever fontes
+        run: flutter create --no-pub --project-name aurora_calculadora_farmaceutica --org br.com.aurora --platforms android .
+      - name: Preparar permissões Android e assinatura opcional
+        env:
+          AURORA_KEYSTORE_BASE64: ${{ secrets.AURORA_KEYSTORE_BASE64 }}
+          AURORA_KEYSTORE_PASSWORD: ${{ secrets.AURORA_KEYSTORE_PASSWORD }}
+          AURORA_KEY_ALIAS: ${{ secrets.AURORA_KEY_ALIAS }}
+          AURORA_KEY_PASSWORD: ${{ secrets.AURORA_KEY_PASSWORD }}
+        run: python3 scripts/configure_android.py
+      - name: Instalar dependências e conferir plugins resolvidos
+        run: |
+          flutter pub get
+          flutter pub deps --style=compact
+      - name: Registrar versão das ferramentas
+        run: |
+          flutter --version
+          dart --version
+          mkdir -p .ci-logs
+      - name: Validar código
+        shell: bash
+        run: |
+          set -o pipefail
+          # Warnings and style suggestions remain visible in the log but
+          # only analyzer errors block tests and APK compilation.
+          flutter analyze --no-fatal-infos --no-fatal-warnings 2>&1 | tee .ci-logs/flutter-analyze.log
+      - name: Executar testes unitários e widgets
+        shell: bash
+        run: |
+          set -o pipefail
+          flutter test 2>&1 | tee .ci-logs/flutter-test.log
+      - name: Testar manifesto e assinatura do APK de distribuição
+        run: python3 -m unittest discover -s release -p 'test_*.py'
+
+      - name: Compilar APK de teste (pacote separado da produção)
+        shell: bash
+        run: |
+          set -o pipefail
+          flutter build apk --debug 2>&1 | tee .ci-logs/flutter-build-android.log
+      - name: Verificar identificador do APK de teste
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_PATH="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          if [[ -z "$SDK_PATH" ]]; then
+            echo "::error::ANDROID_HOME/ANDROID_SDK_ROOT ausente"
+            exit 1
+          fi
+          BUILD_TOOLS="$(find "$SDK_PATH/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)"
+          DEBUG_APK="build/app/outputs/flutter-apk/app-debug.apk"
+          ID="$("$BUILD_TOOLS/aapt" dump badging "$DEBUG_APK" | sed -n "s/^package: name='\\([^']*\\)'.*/\\1/p")"
+          echo "Pacote DEBUG: $ID"
+          if [[ "$ID" != "br.com.aurora.aurora_calculadora_farmaceutica.debug" ]]; then
+            echo "::error::O APK DEBUG usa o mesmo pacote da produção. Evitando novas colisões."
+            exit 1
+          fi
+          echo "DEBUG separado: não substitui o aplicativo oficial" >> "$GITHUB_STEP_SUMMARY"
+      - name: Guardar logs quando o job falhar
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: diagnostico-android-${{ github.run_number }}
+          path: .ci-logs/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Publicar APK de teste nos Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurora-TESTE-debug-NAO-ATUALIZA-${{ github.run_number }}
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
+      - name: Compilar APK release assinado
+        if: env.AURORA_RELEASE_READY == 'true'
+        env:
+          AURORA_KEYSTORE_PASSWORD: ${{ secrets.AURORA_KEYSTORE_PASSWORD }}
+          AURORA_KEY_ALIAS: ${{ secrets.AURORA_KEY_ALIAS }}
+          AURORA_KEY_PASSWORD: ${{ secrets.AURORA_KEY_PASSWORD }}
+        run: flutter build apk --release
+      - name: Validar APK assinado e criar manifesto do atualizador
+        if: env.AURORA_RELEASE_READY == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 release/prepare_android.py build/app/outputs/flutter-apk/app-release.apk dist
+          echo "Manifesto, APK e SHA-256 criados e assinatura verificada" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publicar release APK como artifact
+        if: env.AURORA_RELEASE_READY == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurora-farmaceutica-release-${{ github.run_number }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Publicar versão assinada via Release completo (mesmo fluxo do IPTV)
+        if: env.AURORA_RELEASE_READY == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 release/publish_android.py
+      - name: Informar pendência de assinatura
+        if: env.AURORA_RELEASE_READY != 'true'
+        shell: bash
+        run: |
+          echo "::warning::APK release não publicado: assinatura permanente não está configurada."
+          echo "### Atualização online ainda não ativada" >> "$GITHUB_STEP_SUMMARY"
+          echo "O APK DEBUG desta execução usa um pacote DIFERENTE e não serve para atualização do app oficial." >> "$GITHUB_STEP_SUMMARY"
+          echo "Configure AURORA_KEYSTORE_BASE64, AURORA_KEYSTORE_PASSWORD, AURORA_KEY_ALIAS e AURORA_KEY_PASSWORD em Settings > Secrets and variables > Actions." >> "$GITHUB_STEP_SUMMARY"
+          echo "::error::Não há chave de assinatura persistente. Não é possível garantir atualizações pelo app."
+          exit 1
