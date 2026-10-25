@@ -18,7 +18,7 @@ Para reutilizar uma keystore anterior (recomendado quando tiver a chave original
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\configurar_assinatura_android.ps1 -KeystorePath 'C:\caminho\chave-original.jks' -KeyAlias 'alias-original'
 ```
 
-**Guarde um backup offline do arquivo e da senha em local seguro.** A senha e a chave não podem ser recuperadas a partir dos GitHub Secrets. Se a instalação atual possui outra assinatura e a chave antiga está indisponível, o Android não aceita atualização por cima dela: antes de desinstalar, exporte ou preserve os dados importantes. O primeiro Release oficial pode exigir uma migração única; os Releases seguintes, assinados com a chave estável, poderão ser instalados pelo AURORA.
+**Guarde um backup offline do arquivo e da senha em local seguro.** A senha e a chave não podem ser recuperadas a partir dos GitHub Secrets. A v0.0.1 usa um identificador Android novo e poderá ser instalada ao lado do aplicativo antigo. **Não é necessário desinstalar a instalação anterior para instalar a nova.** Os favoritos antigos não são importados automaticamente. Depois da primeira instalação oficial, os Releases seguintes usam a mesma chave e são atualizados diretamente no AURORA.
 
 ## Fluxo de atualização equivalente ao AURORA IPTV
 
@@ -39,17 +39,17 @@ A publicação pela CI foi alterada para **validar APK real → criar manifesto 
 
 Se o arquivo que você está instalando é `app-debug.apk` de um Artifact `aurora-farmaceutica-debug-N`, **não é o APK oficial de atualização**. Esses APKs de teste foram gerados em máquinas temporárias do GitHub Actions e podiam usar certificados diferentes entre execuções. O Android bloqueia atualização com assinatura distinta, mesmo com o mesmo nome e package ID.
 
-A partir da v0.6.2, a CI isola builds de teste sob `br.com.aurora.calculadorafarmaceutica.debug`. Eles não substituem o pacote de produção `br.com.aurora.calculadorafarmaceutica`. Os Artifacts de teste são explicitamente identificados como **NÃO ATUALIZA**.
+A partir da v0.0.1 no novo repositório, a CI isola builds de teste sob `br.com.aurora.calculadorafarmaceutica.debug`. Eles não substituem o pacote de produção `br.com.aurora.calculadorafarmaceutica`. Os Artifacts de teste são explicitamente identificados como **NÃO ATUALIZA**.
 
 A CI publica um Release instalável somente se quatro Secrets de assinatura persistente estiverem configurados. O fluxo valida o ID de pacote, `versionCode` e assinatura via `apksigner`, publicando também `assinatura-android.txt` para permitir conferência da impressão digital do certificado. Sem assinatura, o workflow indica falha de distribuição; a execução não deve ser considerada uma entrega online bem-sucedida.
 
 ### Configuração inicial obrigatória para atualizar sem reinstalar posteriormente
 
-1. No seu PC, localize a **chave original** (keystore) usada para assinar o aplicativo que deseja manter. Se existir, reutilize-a, com alias e senha correspondentes.
+1. Na sua máquina Windows, crie uma **chave definitiva** ou reutilize uma keystore de distribuição existente, mantendo alias e senha correspondentes. É seguro usar uma chave exclusiva para este novo app.
 2. Configure os quatro Secrets `AURORA_KEYSTORE_BASE64`, `AURORA_KEYSTORE_PASSWORD`, `AURORA_KEY_ALIAS` e `AURORA_KEY_PASSWORD` em `Settings → Secrets and variables → Actions`.
 3. Execute o workflow Android e confirme que o job gerou um Release (não somente um Artifact), com `aurora-calculadora-farmaceutica-vX.Y.Z-android.apk`, `.sha256` e `assinatura-android.txt`.
 4. Após uma instalação Release **assinada pela mesma chave** do aplicativo já instalado, a atualização poderá acontecer pela interface do AURORA. O Android continuará pedindo confirmação.
-5. **Se a instalação atual for debug e a chave original estiver perdida**, não há correção de código que permita sobrepor o APK sem a assinatura anterior. Preserve os dados existentes antes de qualquer desinstalação; a primeira migração para o Release definitivo pode exigir reinstalação e pode apagar favoritos/configurações. Não desinstale sem avaliar esses dados.
+5. **Instale o APK Release oficial como um aplicativo novo**, lado a lado com a edição anterior. O pacote `br.com.aurora.calculadorafarmaceutica` é diferente do antigo, por isso não exige apagar os dados da edição antiga. O próximo APK Release, com versão/código superior e a mesma chave, atualizará este novo aplicativo.
 
 Para confirmar a assinatura de dois APKs no computador com Android SDK:
 
@@ -115,7 +115,7 @@ Sem secrets, a CI pode produzir um APK de teste nos Artifacts, mas **não** cria
 
 ### Atenção: migração de versões DEBUG instaladas anteriormente
 
-É provável que versões iniciais tenham sido instaladas com `app-debug.apk`. APKs debug de diferentes runners e APKs release assinam com chaves diferentes. **Não é possível garantir que um APK release sobrescreva uma instalação debug.** Para migrar, preserve informações importantes por backup apropriado e pode ser necessário desinstalar a versão debug e instalar uma Release assinada. Depois da primeira instalação release assinada com a chave definitiva, as próximas atualizações podem ser realizadas diretamente pelo aplicativo.
+Edições anteriores podem continuar instaladas porque o identificador Android oficial v0.0.1 é novo. Os arquivos `app-debug.apk` do Actions continuam sendo apenas testes e não substituem o app oficial. Instale primeiro a Release assinada v0.0.1; depois, use o próprio AURORA para versões superiores assinadas com a mesma chave.
 
 ### Como testar
 

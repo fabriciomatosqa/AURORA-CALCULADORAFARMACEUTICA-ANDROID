@@ -27,6 +27,6 @@
 
 O repositório contém o utilitário local `scripts/configurar_assinatura_android.ps1`, que configura os Secrets sem publicar a chave privada. A configuração é necessária somente uma vez para as versões seguintes.
 
-**Uma instalação DEBUG antiga, assinada com outra chave, não pode ser atualizada sobre a mesma instalação**. A primeira migração para o APK Release assinado poderá exigir reinstalação e pode apagar dados locais. Faça backup antes de qualquer remoção.
+**O novo aplicativo oficial usa outro identificador de pacote Android.** O primeiro APK Release pode ser instalado lado a lado com a edição antiga, que permanecerá disponível com seus dados. A partir das próximas versões, o novo aplicativo será atualizado por cima, desde que a assinatura permaneça igual.
 
 Ferramenta de apoio matemático ainda não validada para uso farmacêutico regulamentado.

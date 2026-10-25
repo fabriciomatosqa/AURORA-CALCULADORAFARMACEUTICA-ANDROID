@@ -20,7 +20,7 @@ Cada tela informa unidades fixas, fórmula e limitações. Valores monetários o
 
 A workflow [`Android - testes, APK e Release`](.github/workflows/android.yml) executa automaticamente em cada push à `main` e pode ser iniciada manualmente em **Actions → Android APK - testes e compilação → Run workflow**.
 
-Na execução bem-sucedida, abrir o job e baixar o artefato `aurora-farmaceutica-debug-<número da execução>` (ZIP contendo `app-debug.apk`). Trata-se de um **APK de desenvolvimento** instalável em Android, não de uma versão definitiva com assinatura persistente. Instalação manual exige permitir instalação da origem escolhida, conforme políticas do aparelho.
+Na execução bem-sucedida, abrir o job e baixar o artefato `aurora-TESTE-debug-NAO-ATUALIZA-<número da execução>` (ZIP contendo `app-debug.apk`). Trata-se de um **APK de desenvolvimento** instalável em Android, não de uma versão definitiva com assinatura persistente. Instalação manual exige permitir instalação da origem escolhida, conforme políticas do aparelho.
 
 Para compilar localmente com Flutter e Android SDK:
 
@@ -56,7 +56,7 @@ Na categoria **Prescrições**, abra **Quantidade da prescrição**. O cartão *
 
 Neste novo repositório, os APKs debug são separados pelo sufixo de package ID `.debug`. O Release oficial mantém um ID permanente e exige um **keystore de assinatura persistente** nos GitHub Actions Secrets. O workflow verifica a assinatura e falha explicitamente quando não há configuração suficiente para uma atualização real.
 
-Para instalar por cima sem perder dados, o APK novo e o antigo precisam ter o mesmo package ID e certificado. **Se a instalação antiga usa um certificado debug perdido, a primeira migração para Release pode exigir reinstalação**; antes disso, preserve os favoritos e qualquer dado local relevante. Não é possível contornar a verificação do Android.
+**A versão 0.0.1 é um aplicativo Android independente** (`br.com.aurora.calculadorafarmaceutica`), diferente da edição antiga (`br.com.aurora.aurora_calculadora_farmaceutica`). Você pode manter os dois instalados; os favoritos antigos continuam no app antigo e não são migrados automaticamente. Dentro deste novo aplicativo, as versões posteriores exigem a mesma chave permanente para atualizar por cima.
 
 Mais detalhes: [Diagnóstico de assinatura e atualização online](docs/ATUALIZACOES.md).
 
@@ -66,7 +66,7 @@ A versão inicial 0.0.1 adota **GitHub Release com manifesto `aurora-update.json
 
 A chave de distribuição permanece em Actions Secrets e não fica exposta no código ou no cache. O proprietário precisa configurar uma chave persistente **uma única vez** pelo script [configurar_assinatura_android.ps1](scripts/configurar_assinatura_android.ps1) ou via GitHub Secrets. Sem assinatura configurada **não há APK oficial instalável**, mesmo que o código e os testes estejam publicados.
 
-Uma instalação `app-debug.apk` assinada com outra chave **não pode ser substituída por cima**. Para a primeira transição, preserve os dados locais; depois que uma versão Release definitiva estiver instalada, futuras atualizações poderão ser feitas pelo próprio aplicativo.
+Instale o **primeiro APK Release v0.0.1** uma única vez pelo novo repositório. A edição anterior pode continuar instalada separadamente. A partir da v0.0.2, atualizações assinadas com a mesma chave poderão ser baixadas diretamente pelo novo AURORA.
 
 ## Atualização online pelo próprio app Android (v0.0.1)
 
@@ -74,7 +74,7 @@ O repositório oficial agora é **PÚBLICO**. O aplicativo consulta os [Releases
 
 Se houver uma atualização, o app mostra a versão e as notas, pergunta se deseja instalar, baixa o APK internamente, verifica seu SHA-256 e abre o instalador do Android. A confirmação do usuário continua obrigatória: não é uma instalação silenciosa.
 
-**Para o primeiro Release funcionar**, o proprietário ainda precisa configurar a **assinatura Android permanente** (quatro Actions Secrets). O workflow `.github/workflows/android.yml` publica um APK release no próprio repositório, somente depois de validação e compilação bem-sucedidas. Sem esses secrets, apenas APK debug estará disponível como Actions Artifact — não como Release de atualização. Um APK release pode exigir reinstalação inicial se a versão atual usa assinatura debug diferente.
+**Para o primeiro Release funcionar**, o proprietário ainda precisa configurar a **assinatura Android permanente** (quatro Actions Secrets). O workflow `.github/workflows/android.yml` publica um APK release no próprio repositório, somente depois de validação e compilação bem-sucedidas. Sem esses secrets, apenas APK debug estará disponível como Actions Artifact — não como Release de atualização. Por utilizar um novo identificador Android, o primeiro Release é instalado separadamente do aplicativo antigo.
 
 Veja [configuração da assinatura, publicação e testes de atualização](docs/ATUALIZACOES.md).
 
