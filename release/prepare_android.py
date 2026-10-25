@@ -14,7 +14,7 @@ import subprocess
 import sys
 
 REPOSITORY = "fabriciomatosqa/AURORA-CALCULADORAFARMACEUTICA-ANDROID"
-PACKAGE_NAME = "br.com.aurora.aurora_calculadora_farmaceutica"
+PACKAGE_NAME = "br.com.aurora.calculadorafarmaceutica"
 MANIFEST_NAME = "aurora-update.json"
 MAX_APK_BYTES = 512 * 1024 * 1024
 

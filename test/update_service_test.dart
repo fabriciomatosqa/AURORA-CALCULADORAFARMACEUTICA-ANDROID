@@ -22,7 +22,7 @@ void main() {
       if (request.url.toString() == manifestUrl) {
         return http.Response(jsonEncode({
           'schemaVersion': 1,
-          'packageName': 'br.com.aurora.aurora_calculadora_farmaceutica',
+          'packageName': 'br.com.aurora.calculadorafarmaceutica',
           'versionName': '0.5.0',
           'versionCode': 5,
           'minSdk': 24,
@@ -63,7 +63,7 @@ void main() {
     expect(release?.version, '0.5.0');
     expect(release?.versionCode, 5);
     expect(release?.packageName,
-        'br.com.aurora.aurora_calculadora_farmaceutica');
+        'br.com.aurora.calculadorafarmaceutica');
     expect(release?.sha256, sha);
     expect(release?.signingCertSha256, signer);
     expect(release?.apkUrl.toString(), assetUrl);

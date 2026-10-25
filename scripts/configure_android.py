@@ -15,6 +15,13 @@ install_permission = '<uses-permission android:name="android.permission.REQUEST_
 for p in (permission, install_permission):
     if p not in xml:
         xml = xml.replace("<application", "    " + p + "\n    <application", 1)
+# The new official 0.0.1 app has a separate Android applicationId. Keep
+# its Flutter/Kotlin namespace intact while allowing side-by-side install with
+# old debug-signed APKs, whose certificates cannot be replaced.
+xml = xml.replace('android:name=".MainActivity"',
+                  'android:name="br.com.aurora.aurora_calculadora_farmaceutica.MainActivity"')
+xml = xml.replace('android:label="aurora_calculadora_farmaceutica"',
+                  'android:label="AURORA Farmacêutica"')
 manifest.write_text(xml, encoding="utf-8")
 
 # Android native PackageManager checks the archive's package/version/signature
@@ -34,6 +41,13 @@ gradle = root / "android/app/build.gradle.kts"
 if not gradle.exists():
     sys.exit("Expected Flutter Kotlin Gradle template not found")
 source = gradle.read_text(encoding="utf-8")
+# ApplicationId is the installed-app identity; namespace remains the generated
+# Flutter namespace, so plugins and MainActivity still resolve normally.
+previous_id = 'applicationId = "br.com.aurora.aurora_calculadora_farmaceutica"'
+if previous_id not in source:
+    sys.exit("Unable to find generated Flutter applicationId")
+source = source.replace(previous_id,
+                        'applicationId = "br.com.aurora.calculadorafarmaceutica"', 1)
 anchor = 'signingConfig = signingConfigs.getByName("debug")'
 if anchor not in source or "buildTypes {" not in source:
     sys.exit("Unable to locate signing configuration in Android Gradle template")

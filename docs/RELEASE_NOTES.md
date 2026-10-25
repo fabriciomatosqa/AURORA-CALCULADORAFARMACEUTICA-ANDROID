@@ -1,5 +1,10 @@
 # AURORA Calculadora Farmacêutica v0.0.1 — Android
 
+## Novo aplicativo oficial, instalação sem conflito
+
+- O novo pacote Android usa `br.com.aurora.calculadorafarmaceutica`, distinto do app antigo. A versão 0.0.1 pode ser instalada lado a lado sem precisar desinstalar a versão anterior. Dados e favoritos antigos permanecem no app antigo e não migram automaticamente.
+- A assinatura permanente será utilizada por todos os futuros Releases deste novo pacote.
+
 ## Atualização online no mesmo padrão do AURORA IPTV
 
 - O aplicativo consulta os Releases públicos do repositório oficial e agora lê um manifesto **aurora-update.json** publicado junto do APK.

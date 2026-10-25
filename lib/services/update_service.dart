@@ -197,7 +197,7 @@ class UpdateService {
     final appId = contents['packageName'];
     if (contents['schemaVersion'] != 1 ||
         contents['versionName'] != release.version ||
-        appId != 'br.com.aurora.aurora_calculadora_farmaceutica' ||
+        appId != 'br.com.aurora.calculadorafarmaceutica' ||
         contents['apkUrl'] != release.apkUrl.toString() ||
         code is! int || code <= 0 ||
         size is! int || size <= 0 || size > _maxApkBytes ||

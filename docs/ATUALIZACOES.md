@@ -39,7 +39,7 @@ A publicação pela CI foi alterada para **validar APK real → criar manifesto 
 
 Se o arquivo que você está instalando é `app-debug.apk` de um Artifact `aurora-farmaceutica-debug-N`, **não é o APK oficial de atualização**. Esses APKs de teste foram gerados em máquinas temporárias do GitHub Actions e podiam usar certificados diferentes entre execuções. O Android bloqueia atualização com assinatura distinta, mesmo com o mesmo nome e package ID.
 
-A partir da v0.6.2, a CI isola builds de teste sob `br.com.aurora.aurora_calculadora_farmaceutica.debug`. Eles não substituem o pacote de produção `br.com.aurora.aurora_calculadora_farmaceutica`. Os Artifacts de teste são explicitamente identificados como **NÃO ATUALIZA**.
+A partir da v0.6.2, a CI isola builds de teste sob `br.com.aurora.calculadorafarmaceutica.debug`. Eles não substituem o pacote de produção `br.com.aurora.calculadorafarmaceutica`. Os Artifacts de teste são explicitamente identificados como **NÃO ATUALIZA**.
 
 A CI publica um Release instalável somente se quatro Secrets de assinatura persistente estiverem configurados. O fluxo valida o ID de pacote, `versionCode` e assinatura via `apksigner`, publicando também `assinatura-android.txt` para permitir conferência da impressão digital do certificado. Sem assinatura, o workflow indica falha de distribuição; a execução não deve ser considerada uma entrega online bem-sucedida.
 

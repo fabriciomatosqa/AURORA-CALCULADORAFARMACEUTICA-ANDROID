@@ -76,7 +76,7 @@ jobs:
           DEBUG_APK="build/app/outputs/flutter-apk/app-debug.apk"
           ID="$("$BUILD_TOOLS/aapt" dump badging "$DEBUG_APK" | sed -n "s/^package: name='\\([^']*\\)'.*/\\1/p")"
           echo "Pacote DEBUG: $ID"
-          if [[ "$ID" != "br.com.aurora.aurora_calculadora_farmaceutica.debug" ]]; then
+          if [[ "$ID" != "br.com.aurora.calculadorafarmaceutica.debug" ]]; then
             echo "::error::O APK DEBUG usa o mesmo pacote da produção. Evitando novas colisões."
             exit 1
           fi
