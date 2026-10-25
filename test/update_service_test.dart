@@ -12,9 +12,9 @@ void main() {
   test('Lê manifesto assinado do Release mais recente e compara versões', () async {
     final apkName = 'aurora-calculadora-farmaceutica-v0.5.0-android.apk';
     final assetUrl = 'https://github.com/fabriciomatosqa/'
-        'Aurora-calculadorafarmaceutica/releases/download/v0.5.0/$apkName';
+        'AURORA-CALCULADORAFARMACEUTICA-ANDROID/releases/download/v0.5.0/$apkName';
     final manifestUrl = 'https://github.com/fabriciomatosqa/'
-        'Aurora-calculadorafarmaceutica/releases/download/v0.5.0/'
+        'AURORA-CALCULADORAFARMACEUTICA-ANDROID/releases/download/v0.5.0/'
         'aurora-update.json';
     final sha = List.filled(64, 'a').join();
     final signer = List.filled(64, 'b').join();
@@ -39,7 +39,7 @@ void main() {
       return http.Response(jsonEncode({
         'tag_name': 'v0.5.0',
         'html_url': 'https://github.com/fabriciomatosqa/'
-            'Aurora-calculadorafarmaceutica/releases/tag/v0.5.0',
+            'AURORA-CALCULADORAFARMACEUTICA-ANDROID/releases/tag/v0.5.0',
         'body': 'Correções Android',
         'assets': [
           {
@@ -73,11 +73,11 @@ void main() {
     final client = MockClient((_) async => http.Response(jsonEncode({
       'tag_name': 'v0.6.0',
       'html_url': 'https://github.com/fabriciomatosqa/'
-          'Aurora-calculadorafarmaceutica/releases/tag/v0.6.0',
+          'AURORA-CALCULADORAFARMACEUTICA-ANDROID/releases/tag/v0.6.0',
       'assets': [{
         'name': 'aurora-calculadora-farmaceutica-v0.6.0-android.apk',
         'browser_download_url': 'https://github.com/fabriciomatosqa/'
-            'Aurora-calculadorafarmaceutica/releases/download/v0.6.0/'
+            'AURORA-CALCULADORAFARMACEUTICA-ANDROID/releases/download/v0.6.0/'
             'aurora-calculadora-farmaceutica-v0.6.0-android.apk',
       }],
     }), 200));
