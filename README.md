@@ -14,7 +14,7 @@ Aplicativo Flutter com foco exclusivo na versão **Android**, em português, com
 
 **Prescrições (1):** quantidade de comprimidos/cápsulas/sachês inteiros ou volume de líquidos orais para tratamento de dose fixa; comparação da dose diária calculada com limite *informado* e estimativa opcional de embalagens. Veja [regras, validações, limitações e fontes](docs/PRESCRICOES.md).
 
-Cada tela informa unidades fixas, fórmula e limitações. Valores monetários ou clínicos não fazem parte do escopo da versão 0.6.3. Em DPR, separar medições por ponto e vírgula ou linhas (vírgula pode ser separador decimal).
+Cada tela informa unidades fixas, fórmula e limitações. Valores monetários ou clínicos não fazem parte do escopo da versão 0.0.1. Em DPR, separar medições por ponto e vírgula ou linhas (vírgula pode ser separador decimal).
 
 ## Android — construir e obter APK
 
@@ -37,7 +37,7 @@ Saída típica: `build/app/outputs/flutter-apk/app-debug.apk`.
 
 ## Compatibilidade Android do seletor de arquivos
 
-A versão 0.6.3 corrige a compilação Android (AGP 9) atualizando `file_picker` para a série 12.3.x. A seleção de um único arquivo usa `FilePicker.pickFile` e lê seu conteúdo via streaming; os arquivos temporários são eliminados após o processamento. Consulte [notas completas da versão](docs/RELEASE_NOTES.md).
+A versão inicial 0.0.1 utiliza a API de seleção de arquivos compatível com a compilação Android (AGP 9) atualizando `file_picker` para a série 12.3.x. A seleção de um único arquivo usa `FilePicker.pickFile` e lê seu conteúdo via streaming; os arquivos temporários são eliminados após o processamento. Consulte [notas completas da versão](docs/RELEASE_NOTES.md).
 
 ## Importar prescrições por câmera, foto ou PDF (Android v0.0.1)
 
@@ -52,17 +52,17 @@ Na categoria **Prescrições**, abra **Quantidade da prescrição**. O cartão *
 
 ## Instalações e assinaturas — atenção à diferença entre Debug e Release
 
-**APKs de teste dos Artifacts NÃO são atualizações do aplicativo oficial.** Até a versão 0.6.1, cada máquina de compilação podia gerar uma assinatura debug diferente, causando o erro do Android “conflito com um pacote já existente”.
+**APKs de teste dos Artifacts NÃO são atualizações do aplicativo oficial.** Versões do repositório anterior podiam ser assinadas com chaves debug diferentes, provocando o erro “conflito com um pacote já existente”.
 
-A partir da versão 0.6.3, os APKs debug são separados pelo sufixo de package ID `.debug`. O Release oficial mantém um ID permanente e exige um **keystore de assinatura persistente** nos GitHub Actions Secrets. O workflow verifica a assinatura e falha explicitamente quando não há configuração suficiente para uma atualização real.
+Neste novo repositório, os APKs debug são separados pelo sufixo de package ID `.debug`. O Release oficial mantém um ID permanente e exige um **keystore de assinatura persistente** nos GitHub Actions Secrets. O workflow verifica a assinatura e falha explicitamente quando não há configuração suficiente para uma atualização real.
 
 Para instalar por cima sem perder dados, o APK novo e o antigo precisam ter o mesmo package ID e certificado. **Se a instalação antiga usa um certificado debug perdido, a primeira migração para Release pode exigir reinstalação**; antes disso, preserve os favoritos e qualquer dado local relevante. Não é possível contornar a verificação do Android.
 
 Mais detalhes: [Diagnóstico de assinatura e atualização online](docs/ATUALIZACOES.md).
 
-## Atualizações como no AURORA IPTV (v0.0.1)
+## Atualizações no padrão AURORA IPTV (v0.0.1)
 
-A versão 0.6.3 adota **GitHub Release com manifesto `aurora-update.json`, APK assinado, arquivo SHA-256 e certificado**, seguindo o mesmo fluxo de publicação do AURORA IPTV: preparar e verificar APK → testar → Release em rascunho → upload integral → publicar. O aplicativo consulta o Release, baixa o APK no celular e verifica versão, identificador, checksum e assinatura com o Android nativo **antes de abrir o instalador**.
+A versão inicial 0.0.1 adota **GitHub Release com manifesto `aurora-update.json`, APK assinado, arquivo SHA-256 e certificado**, seguindo o mesmo fluxo de publicação do AURORA IPTV: preparar e verificar APK → testar → Release em rascunho → upload integral → publicar. O aplicativo consulta o Release, baixa o APK no celular e verifica versão, identificador, checksum e assinatura com o Android nativo **antes de abrir o instalador**.
 
 A chave de distribuição permanece em Actions Secrets e não fica exposta no código ou no cache. O proprietário precisa configurar uma chave persistente **uma única vez** pelo script [configurar_assinatura_android.ps1](scripts/configurar_assinatura_android.ps1) ou via GitHub Secrets. Sem assinatura configurada **não há APK oficial instalável**, mesmo que o código e os testes estejam publicados.
 
