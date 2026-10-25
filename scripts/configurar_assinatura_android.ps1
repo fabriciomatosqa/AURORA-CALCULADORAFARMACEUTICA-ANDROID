@@ -42,8 +42,13 @@ function Env-Quote([string]$Value) {
 Assert-Tool 'gh'
 Assert-Tool 'keytool'
 Write-Host 'Verificando a autenticação do GitHub...'
-& gh auth status --hostname github.com 2>$null
-if ($LASTEXITCODE -ne 0) {
+# PowerShell 5.1 can treat native stderr as an exception with Stop.
+# Allow the expected unauthenticated state so the login prompt can run.
+$ErrorActionPreference = 'Continue'
+& gh auth status --hostname github.com *> $null
+$ghAuthenticated = ($LASTEXITCODE -eq 0)
+$ErrorActionPreference = 'Stop'
+if (-not $ghAuthenticated) {
   Write-Host 'Autorização do GitHub necessária. O comando abrirá o login oficial.'
   & gh auth login --hostname github.com
   if ($LASTEXITCODE -ne 0) {
