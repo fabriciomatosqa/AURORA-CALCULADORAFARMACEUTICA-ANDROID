@@ -4,7 +4,7 @@ Repositório atual: https://github.com/fabriciomatosqa/AURORA-CALCULADORAFARMACE
 
 Backup do projeto original: https://github.com/fabriciomatosqa/Aurora-calculadorafarmaceutica
 
-Versão inicial do projeto migrado: 0.7.0+10.
+Versão inicial do projeto migrado: 0.0.1+1.
 
 O código Flutter, módulos de prescrições, calculadoras, testes, scripts, GitHub Actions e documentação foram transferidos. Os links do atualizador foram direcionados ao novo repositório.
 

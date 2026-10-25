@@ -1,4 +1,4 @@
-# Atualização online do AURORA — Android v0.6.3
+# Atualização online do AURORA — Android v0.0.1
 
 ## Configuração da assinatura em um comando no Windows
 

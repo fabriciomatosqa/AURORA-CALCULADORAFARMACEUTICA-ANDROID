@@ -2,7 +2,7 @@
 
 Aplicativo Flutter com foco exclusivo na versão **Android**, em português, com **22 calculadoras** para soluções, qualidade, produção e avaliação matemática de prescrições. Os cálculos funcionam offline; inclui interface clara/escura, pesquisa, favoritos locais e cópia de resultados. O iOS está fora das prioridades de desenvolvimento.
 
-> **ATENÇÃO — Protótipo técnico v0.6.3.** Não validado para uso em ambiente regulado, decisão clínica, liberação/reprovação de lotes ou substituição de POPs e métodos aprovados. Toda fórmula, unidade, precisão, arredondamento, faixa, rastreabilidade e condição de aplicação deve ser avaliada pelo responsável técnico antes do uso operacional. Nenhum resultado determina conformidade.
+> **ATENÇÃO — Protótipo técnico v0.0.1.** Não validado para uso em ambiente regulado, decisão clínica, liberação/reprovação de lotes ou substituição de POPs e métodos aprovados. Toda fórmula, unidade, precisão, arredondamento, faixa, rastreabilidade e condição de aplicação deve ser avaliada pelo responsável técnico antes do uso operacional. Nenhum resultado determina conformidade.
 
 ## Calculadoras
 
@@ -39,7 +39,7 @@ Saída típica: `build/app/outputs/flutter-apk/app-debug.apk`.
 
 A versão 0.6.3 corrige a compilação Android (AGP 9) atualizando `file_picker` para a série 12.3.x. A seleção de um único arquivo usa `FilePicker.pickFile` e lê seu conteúdo via streaming; os arquivos temporários são eliminados após o processamento. Consulte [notas completas da versão](docs/RELEASE_NOTES.md).
 
-## Importar prescrições por câmera, foto ou PDF (Android v0.6.3)
+## Importar prescrições por câmera, foto ou PDF (Android v0.0.1)
 
 Na categoria **Prescrições**, abra **Quantidade da prescrição**. O cartão **1. IMPORTAR PRESCRIÇÃO** aparece em destaque no topo com três opções: **Tirar foto**, **Galeria** e **Arquivo / PDF**.
 
@@ -60,7 +60,7 @@ Para instalar por cima sem perder dados, o APK novo e o antigo precisam ter o me
 
 Mais detalhes: [Diagnóstico de assinatura e atualização online](docs/ATUALIZACOES.md).
 
-## Atualizações como no AURORA IPTV (v0.6.3)
+## Atualizações como no AURORA IPTV (v0.0.1)
 
 A versão 0.6.3 adota **GitHub Release com manifesto `aurora-update.json`, APK assinado, arquivo SHA-256 e certificado**, seguindo o mesmo fluxo de publicação do AURORA IPTV: preparar e verificar APK → testar → Release em rascunho → upload integral → publicar. O aplicativo consulta o Release, baixa o APK no celular e verifica versão, identificador, checksum e assinatura com o Android nativo **antes de abrir o instalador**.
 
@@ -68,7 +68,7 @@ A chave de distribuição permanece em Actions Secrets e não fica exposta no c�
 
 Uma instalação `app-debug.apk` assinada com outra chave **não pode ser substituída por cima**. Para a primeira transição, preserve os dados locais; depois que uma versão Release definitiva estiver instalada, futuras atualizações poderão ser feitas pelo próprio aplicativo.
 
-## Atualização online pelo próprio app Android (v0.6.3)
+## Atualização online pelo próprio app Android (v0.0.1)
 
 O repositório oficial agora é **PÚBLICO**. O aplicativo consulta os [Releases do próprio repositório](https://github.com/fabriciomatosqa/AURORA-CALCULADORAFARMACEUTICA-ANDROID/releases) ao iniciar e ao retornar ao primeiro plano, além do botão de verificação no topo. Nenhuma configuração de outro repositório, credencial ou download manual pelo GitHub é necessária **para versões release assinadas compatíveis**.
 

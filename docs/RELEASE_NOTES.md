@@ -1,4 +1,4 @@
-# AURORA Calculadora Farmacêutica v0.7.0 — Android
+# AURORA Calculadora Farmacêutica v0.0.1 — Android
 
 ## Atualização online no mesmo padrão do AURORA IPTV
 
